@@ -12,6 +12,7 @@ server {
         root            /home/www/wordpress;
 
         location / { # on all requests, try for a real file. if it doesn't exist, forward onto out index.php for wordpress to rewrite or 404 nicely
+		index index.php
                 try_files $uri $uri/ /index.php; 
         }
 
