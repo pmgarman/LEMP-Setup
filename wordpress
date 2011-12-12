@@ -5,7 +5,7 @@ upstream php {
 
 server {
         listen          80 default_server;
-		server_name     _;
+	server_name     _;
 
         access_log      /home/www/logs/wordpress/access.log;
         error_log       /home/www/logs/wordpress/error.log;
