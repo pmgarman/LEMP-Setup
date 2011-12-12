@@ -1,0 +1,28 @@
+upstream php {
+        server unix:/tmp/php-cgi.socket;
+        server 127.0.0.1:9000;
+}
+
+server {
+        listen          80 default_server;
+		server_name     _;
+
+        access_log      /home/www/logs/wordpress/access.log;
+        error_log       /home/www/logs/wordpress/error.log;
+        root            /home/www/wordpress;
+
+        location / { # on all requests, try for a real file. if it doesn't exist, forward onto out index.php for wordpress to rewrite or 404 nicely
+                try_files $uri $uri/ /index.php; 
+        }
+
+        location ~ \.php$ { # any .php files should be forwarded onto php-fpm
+                include fastcgi_params;
+                fastcgi_intercept_errors on;
+                fastcgi_pass php;
+        }
+
+        location = /robots.txt { allow all; log_not_found off; access_log off; } # robots.txt is allowed but let's not log it
+        location = /favicon.ico { log_not_found off; access_log off; } # lets not log favicon requests, even if it is missing
+		location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ { expires max; log_not_found off; } # cache expires @ max
+        location ~ /\. { deny all; access_log off; log_not_found off; } # deny access to dot files
+}
