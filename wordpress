@@ -32,7 +32,8 @@ server {
 	}
 
         location ~ \.php$ { # any .php files should be forwarded onto php-fpm
-                include fastcgi_params;
+                try_files $uri =404; # by any we mean real php, not malicious ones renamed to another extension
+		include fastcgi_params;
                 fastcgi_intercept_errors on;
                 fastcgi_pass php;
         }
